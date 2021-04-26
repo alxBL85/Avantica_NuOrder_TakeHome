@@ -1,10 +1,18 @@
-import React, { useState }  from 'react';
+import React, { useState, useEffect }  from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+
 
 import Box from '@material-ui/core/Box';
 import TextField from '@material-ui/core/TextField';
+import Autocomplete from '@material-ui/lab/Autocomplete';
 
-import { selectIssue, getIssues, getSelectedIssue } from './slice/githubSlice';
+import { requestIssuesThunk,// Thunk 
+         selectIssue,       // Action
+         getIssues,         // Selector
+         getSelectedIssue,  // Selector
+         isLoading,         // Selector
+         getError,             // Selector
+         } from './slice/githubSlice';
 
 const App = () => {
   const dispatch = useDispatch();
@@ -12,10 +20,18 @@ const App = () => {
   // ------------ SELECTORS ---------------------------
   const issues = useSelector(getIssues);
   const selectedIssue = useSelector(getSelectedIssue);
+  const loading = useSelector(isLoading);
+  const error = useSelector(getError);
 
   // ------------ LOCAL STATE -------------------------
   const [localValue, setLocalValue] = useState('');
   const [timerId, setTimerId] = useState('');
+
+  // ------------ EFFECTS -----------------------------
+
+  useEffect(()=>{
+   dispatch(requestIssuesThunk('alxBL85'));    
+  }, []);
 
   // ------------ EVENT HANDLERS ----------------------
   const handleChange = (event) => {
@@ -45,14 +61,29 @@ const App = () => {
       <hr/>
 
       <form className={"inputSearchIssue"} noValidate autoComplete="off">
-        <TextField id="outlined-basic" label="Search Issue" variant="outlined" value={localValue} onChange={handleChange}/>
+        
+        {loading? 'Loading...' : <Autocomplete
+        id="searchInput"
+        freeSolo
+        options={issues.map(issue => issue.text)}
+        renderInput={(params) => (
+          <TextField 
+            {...params} 
+            label="Search Open Issues" 
+            margin="normal" 
+            variant="outlined"
+            value={localValue} 
+            onChange={handleChange}           
+          />
+        )}
+        />}    
+
       </form>
 
+      {selectedIssue}
       
     </div>
 </Box>
-
-
     
   );
 }
