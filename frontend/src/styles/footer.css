@@ -1,0 +1,7 @@
+.footerContainer {
+    background-color: #002255;
+    min-height: 50px;
+    position: fixed;
+    bottom:0;
+    width:100%
+}

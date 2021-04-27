@@ -10,8 +10,12 @@ export const requestIssuesThunk = createAsyncThunk('requestIssuesThunk', async (
     const response = await getIssuesService(username);
 
     const openIssues = response.data.map(issue => {
-        const { number, title, body } = issue;
-        return { text: `${number} - ${title}`, value: number, tooltip: body.substring(0, 25) }; 
+        const { number, title, body, labels } = issue;
+        const theLabels = labels.map(label => label.name).join(' , ');
+
+        return { text: `${number} - ${title} (${theLabels})`, 
+                value: number, 
+              tooltip: body.substring(0, 25) }; 
     }).sort( (a,b) => a.value - b.value);
 
     return { openIssues };
