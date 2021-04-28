@@ -10,6 +10,7 @@ import { requestIssuesThunk,// Thunk
     getSelectedIssue,  // Selector
     isLoading,         // Selector
     getError,             // Selector
+    getSelectedDescription, // Selector
     } from '../slice/githubSlice';
 
 import '../styles/body.css';
@@ -24,6 +25,7 @@ const Body = () => {
   const selectedIssue = useSelector(getSelectedIssue);
   const loading = useSelector(isLoading);
   const error = useSelector(getError);
+  const selectedDescription = useSelector(getSelectedDescription);
 
   // ------------ LOCAL STATE -------------------------
   
@@ -35,6 +37,8 @@ const Body = () => {
   useEffect(()=>{
    dispatch(requestIssuesThunk('alxBL85'));    
   }, []);
+
+  useEffect(()=>{}, [selectedIssue])
 
   // ------------ EVENT HANDLERS ----------------------
   const handleChange = (event) => {
@@ -53,16 +57,41 @@ const Body = () => {
     
   };
 
+  const handleSubmit = (event) => {
+      event.preventDefault();
+  };
+
+  /**
+   * This function handles the event when the user click's over one of the displayed options
+   * @param {*} event 
+   * @param {*} option 
+   * @param {*} reason 
+   */
+  const handleInputChange = (event, option, reason) => {
+    if (reason === 'reset' || reason === 'clear')
+    {
+     const theEvent = {
+        target: {
+            value: option,
+        }
+     }
+    
+     handleChange(theEvent);
+    }
+  }
+  
 // ---------------------  RENDER --------------------------------------------
 
  return (<div className='bodyContainer'>    
       
-    <form className={"inputSearchIssue"} noValidate autoComplete="off">
+    <form className={"inputSearchIssue"} noValidate autoComplete="off" onSubmit={handleSubmit}>
       
       {loading? 'Loading...' : <Autocomplete
       id="searchInput"
       freeSolo
       className="inputTextField"
+      handleHomeEndKeys
+      onInputChange = {handleInputChange}
       options={issues.map(issue => issue.text)}
       renderInput={(params) => (
         <TextField 
@@ -71,14 +100,18 @@ const Body = () => {
           margin="normal" 
           variant="outlined"
           value={localValue} 
-          onChange={handleChange}           
+          onChange={handleChange}
+                 
         />
       )}
       />}    
 
     </form>
 
-    {selectedIssue}
+     {selectedDescription && <textarea className="issueDescription" rows={16} value = {selectedDescription} readOnly/>
+        
+     }
+    
     
   </div>
  );   

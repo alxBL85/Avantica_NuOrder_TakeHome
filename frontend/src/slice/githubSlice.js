@@ -15,7 +15,7 @@ export const requestIssuesThunk = createAsyncThunk('requestIssuesThunk', async (
 
         return { text: `${number} - ${title} (${theLabels})`, 
                 value: number, 
-              tooltip: body.substring(0, 25) }; 
+              description: body }; 
     }).sort( (a,b) => a.value - b.value);
 
     return { openIssues };
@@ -31,6 +31,7 @@ export const requestIssuesThunk = createAsyncThunk('requestIssuesThunk', async (
 const initialState = {
   issues: [],
   selectedIssue: null,
+  selectedDescription: '',
   isLoading: false,
   error: '',  
 };
@@ -41,7 +42,11 @@ export const gitHubSlice = createSlice({
     reducers: {
         selectIssue: (state, action) => {
             state.selectedIssue = action.payload;
+
+            state.selectedDescription = action.payload ? state.issues.find(issue => issue.text.includes(action.payload))?.description || '' : '';
         },
+
+        
     },
 
     extraReducers: {
@@ -86,6 +91,8 @@ export const getIssues = (state) => state.gitHubReact.issues;
 export const getSelectedIssue = (state) => state.gitHubReact.selectedIssue;
 export const isLoading = (state) => state.gitHubReact.loading;
 export const getError = (state) => state.gitHubReact.error;
+
+export const getSelectedDescription = (state) => state.gitHubReact.selectedDescription;
 
 // ------------- Reducer: ---------------------------
 
