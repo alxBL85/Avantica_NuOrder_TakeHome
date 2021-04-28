@@ -6,7 +6,7 @@
    background-color: #004466;
    display: flex;
    flex-direction: column;
-   justify-content: center;
+   justify-content: flex-start;
    align-items: center;
  }
 
@@ -15,4 +15,13 @@
     border-radius: 5px;
     padding: 5px 15px;
     width: 600px;
+    margin-top: 25px;
+}
+
+.issueDescription {
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px 15px;
+  width: 600px;
+  margin-top: 25px;
 }
