@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from 'react-redux';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 
+import ErrorDialog from './ErrorDialog/index';
+
 import { requestIssuesThunk,// Thunk 
     selectIssue,       // Action
     getIssues,         // Selector
-    getSelectedIssue,  // Selector
     isLoading,         // Selector
     getError,             // Selector
     getSelectedDescription, // Selector
@@ -22,7 +23,6 @@ const Body = () => {
   // ------------ SELECTORS ---------------------------
   
   const issues = useSelector(getIssues);
-  const selectedIssue = useSelector(getSelectedIssue);
   const loading = useSelector(isLoading);
   const error = useSelector(getError);
   const selectedDescription = useSelector(getSelectedDescription);
@@ -31,6 +31,7 @@ const Body = () => {
   
   const [localValue, setLocalValue] = useState('');
   const [timerId, setTimerId] = useState('');
+  const [showErrorDialog, setShowErrorDialog] = useState(false);
 
   // ------------ EFFECTS -----------------------------
 
@@ -38,8 +39,10 @@ const Body = () => {
    dispatch(requestIssuesThunk('alxBL85'));    
   }, []);
 
-  useEffect(()=>{}, [selectedIssue])
-
+  useEffect(()=>{
+    setShowErrorDialog(error !== '');
+  }, [error])
+  
   // ------------ EVENT HANDLERS ----------------------
   const handleChange = (event) => {
     
@@ -79,11 +82,19 @@ const Body = () => {
      handleChange(theEvent);
     }
   }
+
+// --------------------------------------------------------------------------
+
+const handleCloseErrorDialog = () => {
+  setShowErrorDialog(false);
+}
   
 // ---------------------  RENDER --------------------------------------------
 
  return (<div className='bodyContainer'>    
-      
+    
+    <ErrorDialog isOpen={showErrorDialog} message={error} handleClose = {handleCloseErrorDialog} />
+
     <form className={"inputSearchIssue"} noValidate autoComplete="off" onSubmit={handleSubmit}>
       
       {loading? 'Loading...' : <Autocomplete

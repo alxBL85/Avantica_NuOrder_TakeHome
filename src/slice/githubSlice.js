@@ -8,7 +8,8 @@ export const requestIssuesThunk = createAsyncThunk('requestIssuesThunk', async (
 
    try {
     const response = await getIssuesService(username);
-
+    response.requestId = thunkApi.requestId;
+    
     const openIssues = response.data.map(issue => {
         const { number, title, body, labels } = issue;
         const theLabels = labels.map(label => label.name).join(' , ');
