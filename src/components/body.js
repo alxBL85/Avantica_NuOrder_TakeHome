@@ -128,4 +128,4 @@ const handleCloseErrorDialog = () => {
  );   
 }
 
-export default Body;
+export default React.memo(Body);

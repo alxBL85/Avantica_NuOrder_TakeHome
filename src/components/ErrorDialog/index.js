@@ -28,4 +28,4 @@ const ErrorDialog = ({ isOpen, handleClose, message}) => {
     </Dialog>
 };
 
-export default ErrorDialog;
+export default React.memo(ErrorDialog);
